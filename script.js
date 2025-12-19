@@ -144,72 +144,290 @@ document.addEventListener('DOMContentLoaded', function() {
         lastScroll = currentScroll;
     });
 
-    // Agregar funcionalidad para cargar paquetes dinámicamente
-    // Esta función puede ser llamada cuando tengas los datos del documento RTour Bocana
-    function loadPackages(packagesData) {
-        const packagesGrid = document.getElementById('packagesGrid');
-        if (!packagesGrid || !packagesData) return;
+    // Cargar paquetes desde localStorage
+    loadPackagesFromStorage();
+    
+    // Cargar videos de TikTok desde localStorage
+    loadTikTokVideosFromStorage();
+});
 
+// Función para obtener paquetes desde localStorage
+function getPackagesFromStorage() {
+    const stored = localStorage.getItem('tourPackages');
+    return stored ? JSON.parse(stored) : [];
+}
+
+// Función para cargar paquetes desde localStorage
+function loadPackagesFromStorage() {
+    const packagesData = getPackagesFromStorage();
+    const packagesGrid = document.getElementById('packagesGrid');
+    
+    if (!packagesGrid) return;
+    
+    // Si hay paquetes en localStorage, reemplazar el contenido estático
+    if (packagesData.length > 0) {
         packagesGrid.innerHTML = '';
-        
-        packagesData.forEach(package => {
+        packagesData.forEach(pkg => {
             const packageCard = document.createElement('div');
             packageCard.className = 'package-card';
+            
+            // Construir HTML de características
+            const featuresHTML = pkg.features.map(feature => `<li>${feature}</li>`).join('');
+            
+            // Construir HTML de "no incluye" si existe
+            const notIncludesHTML = pkg.notIncludes && pkg.notIncludes.length > 0 
+                ? `<b>No incluye:<br>${pkg.notIncludes.map(item => item).join('<br>')}</b>` 
+                : '';
+            
             packageCard.innerHTML = `
                 <div class="package-image">
                     <div class="image-placeholder">
-                        <p>Imagen del Paquete: ${package.name}</p>
+                        <img src="${pkg.image}" alt="${pkg.name}" class="hero-main-image" onerror="this.parentElement.innerHTML='<p>Imagen no encontrada</p>'">
                     </div>
                 </div>
                 <div class="package-content">
-                    <h3>${package.name}</h3>
-                    <p>${package.description}</p>
+                    <h3>${pkg.name}</h3>
+                    <p>${pkg.description}</p>
                     <ul class="package-features">
-                        ${package.features.map(feature => `<li>${feature}</li>`).join('')}
+                        ${featuresHTML}
                     </ul>
-                    <div class="package-price">${package.price}</div>
-                    <a href="https://wa.me/573193981055?text=Hola,%20me%20interesa%20obtener%20más%20información%20sobre%20el%20paquete:%20${encodeURIComponent(package.name)}" 
+                    ${notIncludesHTML}
+                    <div class="package-price">${pkg.price}</div>
+                    <a href="https://wa.me/573193981055?text=Hola,%20me%20interesa%20obtener%20más%20información%20sobre%20el%20paquete:%20${encodeURIComponent(pkg.name)}" 
                        class="btn-whatsapp" target="_blank">
-                        Consultar en WhatsApp
+                        ¡Agenda tu viaje!
                     </a>
                 </div>
             `;
             packagesGrid.appendChild(packageCard);
         });
+        
+        // Re-aplicar animaciones a los nuevos elementos
+        const newCards = packagesGrid.querySelectorAll('.package-card');
+        newCards.forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(30px)';
+            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+            observer.observe(card);
+        });
     }
-
-    // Ejemplo de cómo usar loadPackages (comentar cuando tengas los datos reales)
-    /*
-    const packagesData = [
-        {
-            name: "Paquete 1",
-            description: "Descripción del paquete",
-            features: ["Transporte", "Alojamiento", "Guía"],
-            price: "$XXX.XXX"
-        }
-    ];
-    loadPackages(packagesData);
-    */
-});
-
-// Función para agregar videos de TikTok en testimonios
-function loadTikTokVideos(videoIds) {
-    const testimonialsGrid = document.querySelector('.testimonials-grid');
-    if (!testimonialsGrid || !videoIds) return;
-
-    testimonialsGrid.innerHTML = '';
-    
-    videoIds.forEach(videoId => {
-        const testimonialItem = document.createElement('div');
-        testimonialItem.className = 'testimonial-item';
-        testimonialItem.innerHTML = `
-            <div class="video-placeholder">
-                <p>Video de TikTok</p>
-                <!-- Aquí puedes incrustar el video de TikTok usando su ID -->
-                <!-- <blockquote class="tiktok-embed" data-video-id="${videoId}"> -->
-            </div>
-        `;
-        testimonialsGrid.appendChild(testimonialItem);
-    });
 }
+
+// Función para obtener videos de TikTok desde localStorage
+function getTikTokVideosFromStorage() {
+    const stored = localStorage.getItem('tiktokVideos');
+    return stored ? JSON.parse(stored) : [];
+}
+
+// Función para cargar videos de TikTok desde localStorage
+function loadTikTokVideosFromStorage() {
+    const videos = getTikTokVideosFromStorage();
+    const carouselTrack = document.getElementById('carouselTrack');
+    
+    if (!carouselTrack) return;
+    
+    // Si hay videos en localStorage, reemplazar el contenido estático
+    if (videos.length > 0) {
+        carouselTrack.innerHTML = '';
+        
+        videos.forEach(video => {
+            const testimonialItem = document.createElement('div');
+            testimonialItem.className = 'testimonial-item';
+            testimonialItem.innerHTML = `
+                <div class="video-placeholder">
+                    <blockquote class="tiktok-embed" cite="${video.url}"
+                        data-video-id="${video.videoId}" style="max-width: 100%; min-width: 325px;">
+                        <section>
+                            <a href="${video.url}" target="_blank">TikTok</a>
+                        </section>
+                    </blockquote>
+                </div>
+            `;
+            carouselTrack.appendChild(testimonialItem);
+        });
+        
+        // Inicializar el carrusel después de cargar los videos
+        initCarousel();
+        
+        // Recargar el script de TikTok para renderizar los nuevos embeds
+        // Esperar un momento para que el DOM se actualice
+        setTimeout(() => {
+            if (window.tiktokEmbed && window.tiktokEmbed.lib) {
+                window.tiktokEmbed.lib.render();
+            } else {
+                // Si el script aún no está cargado, esperar a que se cargue
+                const checkTikTokScript = setInterval(() => {
+                    if (window.tiktokEmbed && window.tiktokEmbed.lib) {
+                        window.tiktokEmbed.lib.render();
+                        clearInterval(checkTikTokScript);
+                    }
+                }, 100);
+                
+                // Timeout después de 5 segundos
+                setTimeout(() => {
+                    clearInterval(checkTikTokScript);
+                }, 5000);
+            }
+        }, 100);
+    } else {
+        // Si no hay videos en localStorage, inicializar el carrusel con los videos estáticos
+        initCarousel();
+    }
+}
+
+// Función para obtener el número de videos visibles según el tamaño de pantalla
+function getVideosPerView() {
+    return window.innerWidth > 768 ? 3 : 1;
+}
+
+// Función para inicializar el carrusel
+function initCarousel() {
+    const carouselTrack = document.getElementById('carouselTrack');
+    const prevBtn = document.getElementById('carouselPrev');
+    const nextBtn = document.getElementById('carouselNext');
+    const indicatorsContainer = document.getElementById('carouselIndicators');
+    
+    if (!carouselTrack || !prevBtn || !nextBtn || !indicatorsContainer) return;
+    
+    const items = carouselTrack.querySelectorAll('.testimonial-item');
+    if (items.length === 0) return;
+    
+    let currentIndex = 0;
+    let videosPerView = getVideosPerView();
+    
+    // Función para calcular el número máximo de grupos
+    function getMaxGroups() {
+        const totalItems = items.length;
+        const perView = getVideosPerView();
+        return Math.max(1, Math.ceil(totalItems / perView));
+    }
+    
+    // Crear indicadores basados en grupos
+    function createIndicators() {
+        indicatorsContainer.innerHTML = '';
+        const maxGroups = getMaxGroups();
+        
+        for (let i = 0; i < maxGroups; i++) {
+            const indicator = document.createElement('button');
+            indicator.className = 'carousel-indicator';
+            if (i === 0) indicator.classList.add('active');
+            indicator.setAttribute('aria-label', `Ir al grupo ${i + 1}`);
+            indicator.addEventListener('click', () => goToSlide(i));
+            indicatorsContainer.appendChild(indicator);
+        }
+    }
+    
+    // Función para actualizar el carrusel
+    function updateCarousel() {
+        videosPerView = getVideosPerView();
+        
+        if (items.length === 0) return;
+        
+        // Calcular el desplazamiento basado en el ancho real de cada item
+        const firstItem = items[0];
+        if (!firstItem) return;
+        
+        const itemWidth = firstItem.offsetWidth;
+        const gap = videosPerView === 3 ? 24 : 0; // 1.5rem = 24px aproximadamente
+        const translateX = -currentIndex * (itemWidth * videosPerView + gap * (videosPerView - 1));
+        
+        carouselTrack.style.transform = `translateX(${translateX}px)`;
+        
+        // Actualizar indicadores
+        const indicators = indicatorsContainer.querySelectorAll('.carousel-indicator');
+        indicators.forEach((indicator, index) => {
+            if (index === currentIndex) {
+                indicator.classList.add('active');
+            } else {
+                indicator.classList.remove('active');
+            }
+        });
+        
+        // Mostrar/ocultar botones según la posición
+        const maxGroups = getMaxGroups();
+        prevBtn.style.opacity = currentIndex === 0 ? '0.5' : '1';
+        prevBtn.style.pointerEvents = currentIndex === 0 ? 'none' : 'auto';
+        nextBtn.style.opacity = currentIndex >= maxGroups - 1 ? '0.5' : '1';
+        nextBtn.style.pointerEvents = currentIndex >= maxGroups - 1 ? 'none' : 'auto';
+    }
+    
+    // Función para ir a un slide específico
+    function goToSlide(index) {
+        const maxGroups = getMaxGroups();
+        if (index < 0 || index >= maxGroups) return;
+        currentIndex = index;
+        updateCarousel();
+    }
+    
+    // Función para avanzar
+    function nextSlide() {
+        const maxGroups = getMaxGroups();
+        if (currentIndex < maxGroups - 1) {
+            currentIndex++;
+            updateCarousel();
+        }
+    }
+    
+    // Función para retroceder
+    function prevSlide() {
+        if (currentIndex > 0) {
+            currentIndex--;
+            updateCarousel();
+        }
+    }
+    
+    // Event listeners para los botones
+    prevBtn.addEventListener('click', prevSlide);
+    nextBtn.addEventListener('click', nextSlide);
+    
+    // Navegación con teclado
+    document.addEventListener('keydown', (e) => {
+        const testimonialsSection = document.getElementById('testimonios');
+        if (!testimonialsSection) return;
+        
+        const rect = testimonialsSection.getBoundingClientRect();
+        const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
+        
+        if (isVisible) {
+            if (e.key === 'ArrowLeft') {
+                prevSlide();
+            } else if (e.key === 'ArrowRight') {
+                nextSlide();
+            }
+        }
+    });
+    
+    // Recalcular al cambiar el tamaño de la ventana
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            const oldVideosPerView = videosPerView;
+            videosPerView = getVideosPerView();
+            
+            // Recalcular el índice actual si cambió el número de videos por vista
+            if (oldVideosPerView !== videosPerView) {
+                const maxGroups = getMaxGroups();
+                if (currentIndex >= maxGroups) {
+                    currentIndex = maxGroups - 1;
+                }
+                createIndicators();
+                updateCarousel();
+            }
+        }, 250);
+    });
+    
+    // Inicializar
+    createIndicators();
+    updateCarousel();
+}
+
 
