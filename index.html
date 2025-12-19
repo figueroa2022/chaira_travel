@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chaira Travel - Agencia de Viajes</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Modal de Video al Inicio -->
+    <div id="videoModal" class="video-modal">
+        <div class="video-modal-content">
+            <span class="close-video">&times;</span>
+            <div class="video-container">
+
+   
+                <video id="introVideo" controls autoplay>
+                    <source src="assets/videos/poster.mp4" type="video/mp4">   
+                    Tu navegador no soporta videos HTML5.
+                </video>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navegación -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo-container">
+                <div class="logo-animated">
+                    <img src="assets/icons/LOGO-CHAIRA TRAVE.png" alt="" width="100" height="100"/>
+                    </div>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#inicio" class="nav-link">Inicio</a></li>
+                <li><a href="#acerca" class="nav-link">Acerca de Nosotros</a></li>
+                <li><a href="#mapa" class="nav-link">Mapa Ruta</a></li>
+                <li><a href="#paquetes" class="nav-link">Paquetes</a></li>
+                <li><a href="#testimonios" class="nav-link">Testimonios</a></li>
+                <li><a href="#contacto" class="nav-link">Contáctenos</a></li>
+            </ul>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sección Inicio -->
+    <section id="inicio" class="hero">
+        <div class="hero-content">
+            <h2 class="fade-in">Bienvenidos a Chairá Travel</h2>
+            <p class="fade-in-delay">Descubre los destinos más increíbles de Colombia</p>
+            <a href="#paquetes" class="btn-primary fade-in-delay-2">Explorar Paquetes</a>
+        </div>
+        <div class="hero-image">
+            <img src="assets/images/banner3.jpg" alt="Banner Principal Chairá Travel" class="hero-main-image">
+        </div>
+    </section>
+
+    <!-- Sección Acerca de Nosotros -->
+    <section id="acerca" class="about">
+        <div class="container">
+            <h2 class="section-title">Acerca de Nosotros</h2>
+            <div class="about-content">
+                <div class="about-text">
+                    <p>Es una agencia operadora turística del municipio de Cartagena del Chairá, Caquetá fundada y dirigida por jóvenes del barrio 15 de Junio, Buenos Aires, vereda Nupias y Sardinata, que han sido víctimas del conflicto armado en Colombia. Esta iniciativa representa una poderosa muestra de resiliencia y empoderamiento por parte del grupo Jóvenes Resilientes del Turismo, que ha enfrentado adversidades. Al apostar por la resiliencia y el desarrollo económico de la comunidad, se están transformando experiencias personales de dolor en oportunidades de crecimiento y reconstrucción.
+                        A través de la Ruta Agroturística de la Leche y la Panela en la Tierra Chairense, la agencia promueve la identidad local y el contacto con productores, ofreciendo a los visitantes una inmersión en la riqueza cultural, campesina y productiva del territorio. Con cada recorrido, Chairá Travel impulsa la resiliencia y el crecimiento económico y social de la comunidad.</p>
+                       </div>
+                <div class="about-image">
+                    <div class="image-placeholder">
+                        <img src="assets/images/bg-counter-2.jpg" alt="" class="hero-main-image">
+                    </div>
+                    <p>Jóvenes Resilientes del Turismo es un grupo de jóvenes emprendedores de Cartagena del Chairá, Caquetá, que le apuesta al turismo rural como una forma de salir adelante y fortalecer el campo. Con el apoyo del programa Jóvenes Resilientes de USAID y ACDIVOCA, y el acompañamiento del biólogo y guía de turismo William Wilches, crearon la Ruta Agroturística de la Leche y la Panela en la Tierra Chairense, una experiencia que resalta el trabajo de los campesinos y la tradición productiva de la región. Con el sueño de seguir impulsando el agroturismo y dar a conocer las riquezas del territorio, fundaron Chairá Travel, agencia operadora turística del municipio, llevando el turismo rural a otro nivel.</p>
+            
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Mapa Ruta -->
+    <section id="mapa" class="map-section">
+        <div class="container">
+            <h2 class="section-title">Mapa de Ruta</h2>
+            <div class="map-container">
+                <!-- Espacio para imagen del mapa -->
+                <div class="image-placeholder map-placeholder">
+                    <img src="assets/images/ruta.png" alt="" class="hero-main-image">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Paquetes Turísticos -->
+    <section id="paquetes" class="packages">
+        <div class="container">
+            <h2 class="section-title">Paquetes Turísticos</h2>
+            <div class="packages-grid" id="packagesGrid">
+                <!-- Los paquetes se agregarán dinámicamente aquí -->
+                <div class="package-card">
+                    <div class="package-image">
+                        <div class="image-placeholder">
+                            <img src="assets/images/breadcrumbs-bg.jpg" alt="" class="hero-main-image">
+                        </div>
+                    </div>
+                    <div class="package-content">
+                        <h3>Paquete Ejemplo</h3>
+                        <p>Descripción del paquete turístico. Aquí puedes agregar los detalles de cada paquete del documento RTour Bocana.</p>
+                        <ul class="package-features">
+                            <li>Incluye transporte</li>
+                            <li>Alojamiento</li>
+                            <li>Guía turístico</li>
+                        </ul>
+                        <div class="package-price">$XXX.XXX</div>
+                        <a href="https://wa.me/573193981055?text=Hola,%20me%20interesa%20obtener%20más%20información%20sobre%20este%20paquete" 
+                           class="btn-whatsapp" target="_blank">
+                            Consultar en WhatsApp
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+
+    <!-- Sección Testimonios -->
+    <section id="testimonios" class="testimonials">
+        <div class="container">
+            <h2 class="section-title">Testimonios</h2>
+            <div class="testimonials-grid">
+                <div class="testimonial-item">
+                    <div class="video-placeholder">
+                        <div>
+                            <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@jessicaospina001/video/7325182442917203205"
+                            data-video-id="7325182442917203205" style="max-width: 100%; min-width: 325px;">
+                            <section>
+                              <a href="https://www.tiktok.com/@tiktok/video/7325182442917203205"></a>
+                            </section>
+                          </blockquote>
+                        </div>
+                        
+                    </div>
+                </div>
+                <div class="testimonial-item">
+                    <div class="video-placeholder">
+                        <p>Video de TikTok 2</p>
+                    </div>
+                </div>
+                <div class="testimonial-item">
+                    <div class="video-placeholder">
+                        <p>Video de TikTok 3</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección Contacto -->
+    <section id="contacto" class="contact">
+        <div class="container">
+            <h2 class="section-title">Contáctenos</h2>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <h3>Teléfono</h3>
+                        <a href="tel:+573193981055">+57 319-398-1055</a>
+                    </div>
+                    <div class="contact-item">
+                        <h3>Email</h3>
+                        <a href="mailto:chairatravel2024@gmail.com">chairatravel2024@gmail.com</a>
+                    </div>
+                    <div class="contact-item">
+                        <h3>Ubicación</h3>
+                        <p>Cartagena Del Chairá, Caquetá, Colombia</p>
+                    </div>
+                    <div class="social-media">
+                        <h3>Síguenos</h3>
+                        <div class="social-links">
+                            <a href="#" class="social-link facebook" target="_blank" aria-label="Facebook">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                                </svg>
+                            </a>
+                            <a href="#" class="social-link instagram" target="_blank" aria-label="Instagram">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                                </svg>
+                            </a>
+                            <a href="#" class="social-link tiktok" target="_blank" aria-label="TikTok">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/>
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="contact-form">
+                    <form id="contactForm">
+                        <div class="form-group">
+                            <input type="text" id="name" name="name" placeholder="Nombre completo" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" id="email" name="email" placeholder="Email" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="tel" id="phone" name="phone" placeholder="Teléfono" required>
+                        </div>
+                        <div class="form-group">
+                            <textarea id="message" name="message" rows="5" placeholder="Mensaje" required></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary">Enviar Mensaje</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Aviso Legal -->
+    <section class="legal-notice">
+        <div class="container">
+            <h2 class="section-title">Aviso Legal</h2>
+            <div class="legal-content">
+                <p>En desarrollo de lo dispuesto en el artículo 17 de la Ley 679 de 2001, la agencia advierte al turista que la explotación y el abuso sexual de menores de edad en el país son sancionados penal y administrativamente, conforme a las leyes vigentes.</p>
+                <p><strong>Nota:</strong> El Ministerio de Comercio, Industria y Turismo podrá solicitar en cualquier momento, a los establecimientos de alojamiento y a las agencias de viajes, prueba del cumplimiento de estas obligaciones legales.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Botón Flotante de WhatsApp -->
+    <a href="https://wa.me/573193981055?text=Hola,%20me%20gustaría%20obtener%20más%20información%20sobre%20sus%20paquetes%20turísticos" 
+       class="whatsapp-float" target="_blank" aria-label="Contactar por WhatsApp">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="white">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+        </svg>
+    </a>
+
+    <!-- Pie de Página -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Chaira Travel</h3>
+                    <p>Tu agencia de viajes de confianza en Cartagena Del Chairá, Caquetá</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Enlaces Rápidos</h4>
+                    <ul>
+                        <li><a href="#inicio">Inicio</a></li>
+                        <li><a href="#acerca">Acerca de Nosotros</a></li>
+                        <li><a href="#paquetes">Paquetes</a></li>
+                        <li><a href="#contacto">Contacto</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Contacto</h4>
+                    <p>+57 319-398-1055</p>
+                    <p>chairatravel2024@gmail.com</p>
+                    <p>Cartagena Del Chairá, Caquetá</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Redes Sociales</h4>
+                    <div class="footer-social">
+                        <a href="#" class="social-link facebook" target="_blank" aria-label="Facebook">Facebook</a>
+                        <a href="#" class="social-link instagram" target="_blank" aria-label="Instagram">Instagram</a>
+                        <a href="#" class="social-link tiktok" target="_blank" aria-label="TikTok">TikTok</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 Chaira Travel. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script async src="https://www.tiktok.com/embed.js"></script>
+
+</body>
+</html>
+
