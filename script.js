@@ -5,33 +5,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     try {
 
-        /* =========================
-           MODAL DE VIDEO INICIAL
-        ========================== */
-        const videoModal = document.getElementById('videoModal');
-        const closeVideo = document.querySelector('.close-video');
-        const introVideo = document.getElementById('introVideo');
-
-        if (videoModal && !sessionStorage.getItem('videoShown')) {
-            videoModal.classList.remove('hidden');
-
-            closeVideo?.addEventListener('click', () => {
-                videoModal.classList.add('hidden');
-                introVideo?.pause();
-                sessionStorage.setItem('videoShown', 'true');
-            });
-
-            videoModal.addEventListener('click', (e) => {
-                if (e.target === videoModal) {
-                    videoModal.classList.add('hidden');
-                    introVideo?.pause();
-                    sessionStorage.setItem('videoShown', 'true');
-                }
-            });
-        } else {
-            videoModal?.classList.add('hidden');
-        }
-
+        
         /* =========================
            MENÚ HAMBURGUESA
         ========================== */
