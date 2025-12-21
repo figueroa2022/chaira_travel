@@ -537,7 +537,7 @@ section {
 }
 
 .package-description {
-    margin-bottom: 10px;
+    margin-bottom: 1rem;
     color: var(--text-light);
     line-height: 1.6;
 }
@@ -552,7 +552,7 @@ section {
 
 .package-content-wrapper.expanded {
     overflow: visible;
-    max-height: 70px;
+    max-height: none;
 }
 
 .package-content-wrapper::after {
