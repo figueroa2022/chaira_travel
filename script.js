@@ -149,6 +149,53 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Cargar videos de TikTok desde localStorage
     loadTikTokVideosFromStorage();
+    
+    // Actualizar año actual en el footer
+    const currentYearElement = document.getElementById('currentYear');
+    if (currentYearElement) {
+        currentYearElement.textContent = new Date().getFullYear();
+    }
+
+    // Modal para imagen ampliada del mapa
+    const mapImage = document.getElementById('mapImage');
+    const mapModal = document.getElementById('mapModal');
+    const mapModalClose = document.querySelector('.map-modal-close');
+    const mapModalImage = document.getElementById('mapModalImage');
+
+    // Abrir modal al hacer clic en la imagen del mapa
+    if (mapImage && mapModal) {
+        mapImage.addEventListener('click', function() {
+            mapModal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevenir scroll del body
+        });
+    }
+
+    // Cerrar modal al hacer clic en el botón X
+    if (mapModalClose && mapModal) {
+        mapModalClose.addEventListener('click', function() {
+            mapModal.classList.remove('active');
+            document.body.style.overflow = ''; // Restaurar scroll del body
+        });
+    }
+
+    // Cerrar modal al hacer clic fuera de la imagen
+    if (mapModal) {
+        mapModal.addEventListener('click', function(e) {
+            // Solo cerrar si se hace clic en el fondo (no en la imagen)
+            if (e.target === mapModal) {
+                mapModal.classList.remove('active');
+                document.body.style.overflow = ''; // Restaurar scroll del body
+            }
+        });
+    }
+
+    // Cerrar modal con la tecla ESC
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && mapModal && mapModal.classList.contains('active')) {
+            mapModal.classList.remove('active');
+            document.body.style.overflow = ''; // Restaurar scroll del body
+        }
+    });
 });
 
 // Función para obtener paquetes desde localStorage
@@ -167,9 +214,10 @@ function loadPackagesFromStorage() {
     // Si hay paquetes en localStorage, reemplazar el contenido estático
     if (packagesData.length > 0) {
         packagesGrid.innerHTML = '';
-        packagesData.forEach(pkg => {
+        packagesData.forEach((pkg, index) => {
             const packageCard = document.createElement('div');
             packageCard.className = 'package-card';
+            packageCard.dataset.index = index;
             
             // Construir HTML de características
             const featuresHTML = pkg.features.map(feature => `<li>${feature}</li>`).join('');
@@ -187,11 +235,14 @@ function loadPackagesFromStorage() {
                 </div>
                 <div class="package-content">
                     <h3>${pkg.name}</h3>
-                    <p>${pkg.description}</p>
-                    <ul class="package-features">
-                        ${featuresHTML}
-                    </ul>
-                    ${notIncludesHTML}
+                    <div class="package-content-wrapper">
+                        <p class="package-description">${pkg.description}</p>
+                        <ul class="package-features">
+                            ${featuresHTML}
+                        </ul>
+                        ${notIncludesHTML}
+                    </div>
+                    <button class="btn-ver-mas" onclick="togglePackageContent(${index})">Ver más</button>
                     <div class="package-price">${pkg.price}</div>
                     <a href="https://wa.me/573193981055?text=Hola,%20me%20interesa%20obtener%20más%20información%20sobre%20el%20paquete:%20${encodeURIComponent(pkg.name)}" 
                        class="btn-whatsapp" target="_blank">
@@ -201,6 +252,12 @@ function loadPackagesFromStorage() {
             `;
             packagesGrid.appendChild(packageCard);
         });
+        
+        // Inicializar botones "Ver más" después de cargar
+        setTimeout(() => {
+            initVerMasButtons();
+            initPackagesCarousel();
+        }, 100);
         
         // Re-aplicar animaciones a los nuevos elementos
         const newCards = packagesGrid.querySelectorAll('.package-card');
@@ -219,6 +276,210 @@ function loadPackagesFromStorage() {
             observer.observe(card);
         });
     }
+    
+    // Siempre inicializar el carrusel (tanto si hay paquetes en localStorage como si no)
+    setTimeout(() => {
+        if (packagesData.length === 0) {
+            initVerMasButtons();
+        }
+        initPackagesCarousel();
+    }, 200);
+}
+
+// Función para inicializar botones "Ver más"
+function initVerMasButtons() {
+    const packageCards = document.querySelectorAll('.package-card');
+    packageCards.forEach((card, index) => {
+        const contentWrapper = card.querySelector('.package-content-wrapper');
+        const btnVerMas = card.querySelector('.btn-ver-mas');
+        
+        if (!contentWrapper || !btnVerMas) return;
+        
+        // Remover clases de expansión temporalmente para medir
+        const wasExpanded = card.classList.contains('expanded');
+        if (wasExpanded) {
+            card.classList.remove('expanded');
+            contentWrapper.classList.remove('expanded');
+        }
+        
+        // Esperar un momento para que el DOM se actualice
+        setTimeout(() => {
+            // Obtener la altura del contenido completo
+            const contentHeight = contentWrapper.scrollHeight;
+            const containerHeight = contentWrapper.clientHeight;
+            
+            // Verificar si el contenido es más grande que el contenedor
+            // Agregamos un margen de 10px para evitar problemas de redondeo
+            const isOverflowing = contentHeight > containerHeight + 10;
+            
+            if (!isOverflowing) {
+                btnVerMas.classList.add('hidden');
+            } else {
+                btnVerMas.classList.remove('hidden');
+            }
+            
+            // Restaurar estado expandido si estaba expandido
+            if (wasExpanded) {
+                card.classList.add('expanded');
+                contentWrapper.classList.add('expanded');
+                btnVerMas.textContent = 'Ver menos';
+            }
+        }, 50);
+    });
+}
+
+// Función para expandir/colapsar contenido del paquete (global)
+window.togglePackageContent = function(index) {
+    const packageCards = document.querySelectorAll('.package-card');
+    const card = packageCards[index];
+    
+    if (!card) return;
+    
+    const contentWrapper = card.querySelector('.package-content-wrapper');
+    const content = card.querySelector('.package-content');
+    const btnVerMas = card.querySelector('.btn-ver-mas');
+    
+    if (!contentWrapper || !content || !btnVerMas) return;
+    
+    const isExpanded = card.classList.contains('expanded');
+    
+    if (isExpanded) {
+        card.classList.remove('expanded');
+        contentWrapper.classList.remove('expanded');
+        content.classList.remove('expanded');
+        btnVerMas.textContent = 'Ver más';
+    } else {
+        card.classList.add('expanded');
+        contentWrapper.classList.add('expanded');
+        content.classList.add('expanded');
+        btnVerMas.textContent = 'Ver menos';
+    }
+}
+
+// Función para inicializar el carrusel de paquetes
+function initPackagesCarousel() {
+    const packagesGrid = document.getElementById('packagesGrid');
+    const prevBtn = document.getElementById('packagesPrev');
+    const nextBtn = document.getElementById('packagesNext');
+    const indicatorsContainer = document.getElementById('packagesIndicators');
+    
+    if (!packagesGrid || !prevBtn || !nextBtn || !indicatorsContainer) return;
+    
+    const items = packagesGrid.querySelectorAll('.package-card');
+    if (items.length === 0) return;
+    
+    let currentIndex = 0;
+    let packagesPerView = window.innerWidth > 768 ? 3 : 1;
+    
+    // Función para calcular el número máximo de grupos
+    function getMaxGroups() {
+        const totalItems = items.length;
+        const perView = window.innerWidth > 768 ? 3 : 1;
+        return Math.max(1, Math.ceil(totalItems / perView));
+    }
+    
+    // Crear indicadores basados en grupos
+    function createIndicators() {
+        indicatorsContainer.innerHTML = '';
+        const maxGroups = getMaxGroups();
+        
+        for (let i = 0; i < maxGroups; i++) {
+            const indicator = document.createElement('button');
+            indicator.className = 'carousel-indicator';
+            if (i === 0) indicator.classList.add('active');
+            indicator.setAttribute('aria-label', `Ir al grupo ${i + 1}`);
+            indicator.addEventListener('click', () => goToSlide(i));
+            indicatorsContainer.appendChild(indicator);
+        }
+    }
+    
+    // Función para actualizar el carrusel
+    function updateCarousel() {
+        packagesPerView = window.innerWidth > 768 ? 3 : 1;
+        
+        if (items.length === 0) return;
+        
+        // Calcular el desplazamiento basado en el ancho real de cada item
+        const firstItem = items[0];
+        if (!firstItem) return;
+        
+        const itemWidth = firstItem.offsetWidth;
+        const gap = packagesPerView === 3 ? 24 : 0; // 1.5rem = 24px aproximadamente
+        const translateX = -currentIndex * (itemWidth * packagesPerView + gap * (packagesPerView - 1));
+        
+        packagesGrid.style.transform = `translateX(${translateX}px)`;
+        
+        // Actualizar indicadores
+        const indicators = indicatorsContainer.querySelectorAll('.carousel-indicator');
+        indicators.forEach((indicator, index) => {
+            if (index === currentIndex) {
+                indicator.classList.add('active');
+            } else {
+                indicator.classList.remove('active');
+            }
+        });
+        
+        // Mostrar/ocultar botones según la posición
+        const maxGroups = getMaxGroups();
+        prevBtn.style.opacity = currentIndex === 0 ? '0.5' : '1';
+        prevBtn.style.pointerEvents = currentIndex === 0 ? 'none' : 'auto';
+        nextBtn.style.opacity = currentIndex >= maxGroups - 1 ? '0.5' : '1';
+        nextBtn.style.pointerEvents = currentIndex >= maxGroups - 1 ? 'none' : 'auto';
+    }
+    
+    // Función para ir a un slide específico
+    function goToSlide(index) {
+        const maxGroups = getMaxGroups();
+        if (index < 0 || index >= maxGroups) return;
+        currentIndex = index;
+        updateCarousel();
+    }
+    
+    // Función para avanzar
+    function nextSlide() {
+        const maxGroups = getMaxGroups();
+        if (currentIndex < maxGroups - 1) {
+            currentIndex++;
+            updateCarousel();
+        }
+    }
+    
+    // Función para retroceder
+    function prevSlide() {
+        if (currentIndex > 0) {
+            currentIndex--;
+            updateCarousel();
+        }
+    }
+    
+    // Event listeners para los botones
+    prevBtn.addEventListener('click', prevSlide);
+    nextBtn.addEventListener('click', nextSlide);
+    
+    // Recalcular al cambiar el tamaño de la ventana
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            const oldPackagesPerView = packagesPerView;
+            packagesPerView = window.innerWidth > 768 ? 3 : 1;
+            
+            // Recalcular el índice actual si cambió el número de paquetes por vista
+            if (oldPackagesPerView !== packagesPerView) {
+                const maxGroups = getMaxGroups();
+                if (currentIndex >= maxGroups) {
+                    currentIndex = maxGroups - 1;
+                }
+                createIndicators();
+                updateCarousel();
+                initVerMasButtons(); // Re-inicializar botones después de resize
+            }
+        }, 250);
+    });
+    
+    // Inicializar
+    createIndicators();
+    updateCarousel();
 }
 
 // Función para obtener videos de TikTok desde localStorage
