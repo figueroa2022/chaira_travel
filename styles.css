@@ -519,7 +519,7 @@ section {
 }
 
 .package-content {
-    padding: 1.5rem;
+    padding: 0.5rem;
     display: flex;
     flex-direction: column;
     flex: 1;
