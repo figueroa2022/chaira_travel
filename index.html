@@ -24,7 +24,7 @@
                 <li><a href="#acerca" class="nav-link">Acerca de Nosotros</a></li>
                 <li><a href="#mapa" class="nav-link">Mapa Ruta</a></li>
                 <li><a href="#paquetes" class="nav-link">Paquetes</a></li>
-                 <li><a href="#galeria" class="nav-link">Galeria</a></li>
+                <li><a href="#galeria" class="nav-link">Galeria</a></li>
                 <li><a href="#testimonios" class="nav-link">Testimonios</a></li>
                 <li><a href="#contacto" class="nav-link">Contáctenos</a></li>
             </ul>
@@ -54,7 +54,7 @@
             <h2 class="section-title">Acerca de Nosotros</h2>
             <div class="about-content">
                 <div class="about-text">
-                    <p> Chaira Travel es una agencia operadora turística del municipio de Cartagena del Chairá, Caquetá fundada y dirigida por jóvenes del barrio 15 de Junio, Buenos Aires, vereda Nupias y Sardinata, que han sido víctimas del conflicto armado en Colombia. Esta iniciativa representa una poderosa muestra de resiliencia y empoderamiento por parte del grupo Jóvenes Resilientes del Turismo, que ha enfrentado adversidades. Al apostar por la resiliencia y el desarrollo económico de la comunidad, se están transformando experiencias personales de dolor en oportunidades de crecimiento y reconstrucción.
+                    <p>Chaira Travel Es una agencia operadora turística del municipio de Cartagena del Chairá, Caquetá fundada y dirigida por jóvenes del barrio 15 de Junio, Buenos Aires, vereda Nupias y Sardinata, que han sido víctimas del conflicto armado en Colombia. Esta iniciativa representa una poderosa muestra de resiliencia y empoderamiento por parte del grupo Jóvenes Resilientes del Turismo, que ha enfrentado adversidades. Al apostar por la resiliencia y el desarrollo económico de la comunidad, se están transformando experiencias personales de dolor en oportunidades de crecimiento y reconstrucción.
                         A través de la Ruta Agroturística de la Leche y la Panela en la Tierra Chairense, la agencia promueve la identidad local y el contacto con productores, ofreciendo a los visitantes una inmersión en la riqueza cultural, campesina y productiva del territorio. Con cada recorrido, Chairá Travel impulsa la resiliencia y el crecimiento económico y social de la comunidad.</p>
                        </div>
                 <div class="about-image">
@@ -215,6 +215,16 @@
     </div>
   </div>
 </section>
+    <style>
+/* Testimonios TikTok: se carga cada video solo al hacer clic (evita el bloqueo "overload-protect") */
+#testimonios .video-placeholder{position:relative;border:0;background:linear-gradient(160deg,#54287f,#2a1445);min-height:0;aspect-ratio:9/16;width:100%;overflow:hidden}
+#testimonios .tt-facade{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:#fff}
+#testimonios .tt-play{background:rgba(255,255,255,.15);border:2px solid #fff;color:#fff;border-radius:50%;width:110px;height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;font:600 12px/1.2 inherit;transition:transform .2s ease,background .2s ease}
+#testimonios .tt-play:hover{transform:scale(1.08);background:rgba(255,255,255,.28)}
+#testimonios .tt-play svg{width:44px;height:44px}
+#testimonios .tt-link{color:#fff;font-size:.85rem;opacity:.85;text-decoration:underline}
+#testimonios .video-placeholder iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+</style>
     <!-- Sección Testimonios -->
     <section id="testimonios" class="testimonials">
         <div class="container">
@@ -230,54 +240,49 @@
                         <div class="testimonial-item">
                             <div class="video-placeholder">
                                
-                                <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@jessicaospina001/video/7466566682526436613"
-                                data-video-id="7466566682526436613" style="max-width: 100%; min-width: 325px;">
-                                <section>
-                                  <a href="https://www.tiktok.com/@tiktok/video/7466566682526436613">TikTok</a>
-                                </section>
-                              </blockquote>
+                                <div class="tt-facade" data-id="7466566682526436613">
+                                    <button type="button" class="tt-play" aria-label="Reproducir video de TikTok">
+                                        <svg width="64" height="64" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                                        <span>Ver testimonio</span>
+                                    </button>
+                                    <a class="tt-link" href="https://www.tiktok.com/@jessicaospina001/video/7466566682526436613" target="_blank" rel="noopener noreferrer">Abrir en TikTok</a>
+                                </div>
                                                         
                             </div>
                         </div>
                         <div class="testimonial-item">
                             <div class="video-placeholder">
-                                <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@jessicaospina001/video/7325182442917203205"
-                                data-video-id="7325182442917203205" style="max-width: 100%; min-width: 325px;">
-                                <section>
-                                  <a href="https://www.tiktok.com/@tiktok/video/7325182442917203205">TikTok</a>
-                                </section>
-                              </blockquote>
+                                <div class="tt-facade" data-id="7325182442917203205">
+                                    <button type="button" class="tt-play" aria-label="Reproducir video de TikTok">
+                                        <svg width="64" height="64" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                                        <span>Ver testimonio</span>
+                                    </button>
+                                    <a class="tt-link" href="https://www.tiktok.com/@jessicaospina001/video/7325182442917203205" target="_blank" rel="noopener noreferrer">Abrir en TikTok</a>
+                                </div>
                         
                             </div>
                         </div>
                         <div class="testimonial-item">
                             <div class="video-placeholder">
-                                <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@jessicaospina001/video/7305611527397182725"
-                                data-video-id="7305611527397182725" style="max-width: 100%; min-width: 325px;">
-                                <section>
-                                  <a href="https://www.tiktok.com/@tiktok/video/7305611527397182725">TikTok</a>
-                                </section>
-                              </blockquote>
+                                <div class="tt-facade" data-id="7305611527397182725">
+                                    <button type="button" class="tt-play" aria-label="Reproducir video de TikTok">
+                                        <svg width="64" height="64" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                                        <span>Ver testimonio</span>
+                                    </button>
+                                    <a class="tt-link" href="https://www.tiktok.com/@jessicaospina001/video/7305611527397182725" target="_blank" rel="noopener noreferrer">Abrir en TikTok</a>
+                                </div>
                             </div>
                         </div>
                       
 <div class="testimonial-item">
     <div class="video-placeholder">
-        <blockquote
-            class="tiktok-embed"
-            cite="https://www.tiktok.com/@jessicaospina001/video/7314749531525025030"
-            data-video-id="7314749531525025030"
-            style="max-width: 605px; min-width: 325px;">
-
-            <section>
-                <a
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    href="https://www.tiktok.com/@jessicaospina001/video/7314749531525025030">
-                    Ver video en TikTok
-                </a>
-            </section>
-        </blockquote>
+        <div class="tt-facade" data-id="7314749531525025030">
+                                    <button type="button" class="tt-play" aria-label="Reproducir video de TikTok">
+                                        <svg width="64" height="64" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                                        <span>Ver testimonio</span>
+                                    </button>
+                                    <a class="tt-link" href="https://www.tiktok.com/@jessicaospina001/video/7314749531525025030" target="_blank" rel="noopener noreferrer">Abrir en TikTok</a>
+                                </div>
     </div>
 </div>
 
@@ -424,7 +429,6 @@
     </footer>
 
     <script src="script.js"></script>
-    <script async src="https://www.tiktok.com/embed.js"></script>
     <script>
 (function () {
   var EXT = /\.(jpe?g|png|webp|gif|avif)$/i;
@@ -546,6 +550,22 @@
 })();
 </script>
     
+<script>
+(function () {
+  document.querySelectorAll('#testimonios .tt-facade').forEach(function (box) {
+    var btn = box.querySelector('.tt-play');
+    btn.addEventListener('click', function () {
+      var f = document.createElement('iframe');
+      f.src = 'https://www.tiktok.com/embed/v2/' + box.getAttribute('data-id');
+      f.allow = 'autoplay; fullscreen; encrypted-media';
+      f.allowFullscreen = true;
+      f.setAttribute('scrolling', 'no');
+      f.title = 'Video de TikTok';
+      box.parentNode.replaceChild(f, box);
+    });
+  });
+})();
+</script>
 </body>
 </html>
 
