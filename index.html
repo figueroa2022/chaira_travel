@@ -448,19 +448,25 @@
   }
 
 function construir() {
-    track.innerHTML = '';
-    fotos.forEach((src, i) => {
-      const item = document.createElement('div');
-      item.className = 'testimonial-item';
-      const img = document.createElement('img');
-      img.src = src;
-      img.alt = 'Foto ' + (i + 1);
-      img.loading = 'lazy';
-      item.appendChild(img);
-      track.appendChild(item);
-    });
-    ajustar();
-  }
+  track.innerHTML = '';
+  fotos.forEach((src, i) => {
+    const item = document.createElement('div');
+    item.className = 'testimonial-item';
+
+    const marco = document.createElement('div');
+    marco.className = 'foto-marco';
+
+    const img = document.createElement('img');
+    img.src = src;
+    img.alt = 'Foto ' + (i + 1);
+    img.loading = 'lazy';
+
+    marco.appendChild(img);
+    item.appendChild(marco);
+    track.appendChild(item);
+  });
+  ajustar();
+}
   function ajustar() {
     perView = calcPerView();
     track.querySelectorAll('.testimonial-item').forEach(el => {
@@ -517,7 +523,7 @@ function construir() {
   });
 })();
 </script>
-
+    
 </body>
 </html>
 
