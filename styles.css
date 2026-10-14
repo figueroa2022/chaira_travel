@@ -1138,7 +1138,6 @@ section {
         padding: 3rem 0;
     }
 }
-
 #fotosCarousel { overflow: hidden; }
 #fotosTrack { display: flex; transition: transform .5s ease; }
 #fotosTrack .testimonial-item { padding: 0 10px; box-sizing: border-box; }
@@ -1162,3 +1161,14 @@ section {
   object-fit: contain;
   display: block;
 }
+#fotosTrack .foto-marco { position: relative; }
+
+#fotosTrack .foto-marco .fondo {
+  position: absolute;
+  inset: -20px;
+  background-size: cover;
+  background-position: center;
+  filter: blur(20px) brightness(.85);
+}
+
+#fotosTrack .foto-marco img { position: relative; z-index: 1; }
