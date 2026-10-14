@@ -247,6 +247,79 @@
     </div>
 </section>
 
+    
+    <!-- Sección Fotos -->
+    <section id="testimonios" class="testimonials">
+        <div class="container">
+            <h2 class="section-title">Fotos</h2>
+            <div class="carousel-container">
+                <button class="carousel-btn carousel-btn-prev" id="carouselPrev" aria-label="Video anterior">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M15 18l-6-6 6-6"/>
+                    </svg>
+                </button>
+                <div class="testimonials-carousel" id="testimonialsCarousel">
+                    <div class="carousel-track" id="carouselTrack">
+                    
+                        <div class="testimonial-item">
+                            <div class="video-placeholder">
+                               
+                    <?php
+                    $carpeta = __DIR__ . '/fotos/';
+                    $urlCarpeta = 'fotos/';
+                    $extensiones = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+                    $archivos = [];
+
+                    foreach ($extensiones as $extension) {
+                        $encontrados = glob($carpeta . '*.' . $extension);
+                        $mayusculas = glob(
+                            $carpeta . '*.' . strtoupper($extension)
+                        );
+
+                        if ($encontrados !== false) {
+                            $archivos = array_merge($archivos, $encontrados);
+                        }
+
+                        if ($mayusculas !== false) {
+                            $archivos = array_merge($archivos, $mayusculas);
+                        }
+                    }
+
+                    $archivos = array_unique($archivos);
+                    sort($archivos, SORT_NATURAL | SORT_FLAG_CASE);
+
+                    foreach ($archivos as $archivo) {
+                        $nombre = basename($archivo);
+                        $url = $urlCarpeta . rawurlencode($nombre);
+                    ?>
+
+                        <div class="galeria-slide">
+                            <img
+                                src="<?= htmlspecialchars(
+                                    $url, ENT_QUOTES, 'UTF-8'
+                                ) ?>"
+                                alt="Fotografía de la galería"
+                                loading="lazy">
+                        </div>
+
+                    <?php } ?>
+
+                               
+                                                        
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                <button class="carousel-btn carousel-btn-next" id="carouselNext" aria-label="Video siguiente">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 18l6-6-6-6"/>
+                    </svg>
+                </button>
+                <div class="carousel-indicators" id="carouselIndicators"></div>
+            </div>
+        </div>
+    </section>
     <!-- Sección Testimonios -->
     <section id="testimonios" class="testimonials">
         <div class="container">
