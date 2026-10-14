@@ -460,58 +460,32 @@ function getTikTokVideosFromStorage() {
 function loadTikTokVideosFromStorage() {
     const videos = getTikTokVideosFromStorage();
     const carouselTrack = document.getElementById('carouselTrack');
-    
+
     if (!carouselTrack) return;
-    
-    // Si hay videos en localStorage, reemplazar el contenido estático
+
     if (videos.length > 0) {
         carouselTrack.innerHTML = '';
-        
+
         videos.forEach(video => {
             const testimonialItem = document.createElement('div');
             testimonialItem.className = 'testimonial-item';
             testimonialItem.innerHTML = `
                 <div class="video-placeholder">
-                    <blockquote class="tiktok-embed" cite="${video.url}"
-                        data-video-id="${video.videoId}" style="max-width: 100%; min-width: 325px;">
-                        <section>
-                            <a href="${video.url}" target="_blank">TikTok</a>
-                        </section>
-                    </blockquote>
+                    <div class="tt-facade" data-id="${video.videoId}">
+                        <button type="button" class="tt-play" aria-label="Reproducir video de TikTok">
+                            <svg width="64" height="64" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                            <span>Ver testimonio</span>
+                        </button>
+                        <a class="tt-link" href="${video.url}" target="_blank" rel="noopener noreferrer">Abrir en TikTok</a>
+                    </div>
                 </div>
             `;
             carouselTrack.appendChild(testimonialItem);
         });
-        
-        // Inicializar el carrusel después de cargar los videos
-        initCarousel();
-        
-        // Recargar el script de TikTok para renderizar los nuevos embeds
-        // Esperar un momento para que el DOM se actualice
-        setTimeout(() => {
-            if (window.tiktokEmbed && window.tiktokEmbed.lib) {
-                window.tiktokEmbed.lib.render();
-            } else {
-                // Si el script aún no está cargado, esperar a que se cargue
-                const checkTikTokScript = setInterval(() => {
-                    if (window.tiktokEmbed && window.tiktokEmbed.lib) {
-                        window.tiktokEmbed.lib.render();
-                        clearInterval(checkTikTokScript);
-                    }
-                }, 100);
-                
-                // Timeout después de 5 segundos
-                setTimeout(() => {
-                    clearInterval(checkTikTokScript);
-                }, 5000);
-            }
-        }, 100);
-    } else {
-        // Si no hay videos en localStorage, inicializar el carrusel con los videos estáticos
-        initCarousel();
     }
-}
 
+    initCarousel();
+}
 // Función para obtener el número de videos visibles según el tamaño de pantalla
 function getVideosPerView() {
     return window.innerWidth > 768 ? 3 : 1;
