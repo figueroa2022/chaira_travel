@@ -461,6 +461,11 @@ function construir() {
     img.alt = 'Foto ' + (i + 1);
     img.loading = 'lazy';
 
+    const fondo = document.createElement('div');
+fondo.className = 'fondo';
+fondo.style.backgroundImage = 'url("' + src + '")';
+marco.appendChild(fondo);
+      
     marco.appendChild(img);
     item.appendChild(marco);
     track.appendChild(item);
