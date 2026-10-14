@@ -659,4 +659,99 @@ function initCarousel() {
     updateCarousel();
 }
 
+document.addEventListener("DOMContentLoaded", function () {
+    const track = document.getElementById("galeriaTrack");
+    const prev = document.getElementById("fotoPrev");
+    const next = document.getElementById("fotoNext");
+    const indicadores = document.getElementById("fotoIndicadores");
+
+    if (!track || !prev || !next || !indicadores) return;
+
+    const slides = Array.from(track.querySelectorAll(".galeria-slide"));
+    let indice = 0;
+
+    if (!slides.length) return;
+
+    function visibles() {
+        if (window.innerWidth <= 480) return 1;
+        if (window.innerWidth <= 768) return 2;
+        return 3;
+    }
+
+    function maxIndice() {
+        return Math.max(0, slides.length - visibles());
+    }
+
+    function actualizar() {
+        indice = Math.min(indice, maxIndice());
+
+        const slide = slides[0];
+        const estilo = getComputedStyle(track);
+        const espacio = parseFloat(estilo.gap) || 0;
+        const ancho = slide.getBoundingClientRect().width;
+
+        track.style.transform =
+            `translateX(-${indice * (ancho + espacio)}px)`;
+
+        indicadores.querySelectorAll("button").forEach((boton, i) => {
+            boton.classList.toggle("active", i === indice);
+        });
+
+        prev.disabled = indice === 0;
+        next.disabled = indice === maxIndice();
+    }
+
+    indicadores.innerHTML = "";
+
+    for (let i = 0; i <= maxIndice(); i++) {
+        const boton = document.createElement("button");
+        boton.type = "button";
+        boton.setAttribute("aria-label", `Ir a la posición ${i + 1}`);
+
+        boton.addEventListener("click", function () {
+            indice = i;
+            actualizar();
+        });
+
+        indicadores.appendChild(boton);
+    }
+
+    prev.addEventListener("click", function () {
+        if (indice > 0) {
+            indice--;
+            actualizar();
+        }
+    });
+
+    next.addEventListener("click", function () {
+        if (indice < maxIndice()) {
+            indice++;
+            actualizar();
+        }
+    });
+
+    window.addEventListener("resize", function () {
+        const anterior = indice;
+        const cantidad = maxIndice();
+
+        if (anterior > cantidad) indice = cantidad;
+
+        indicadores.innerHTML = "";
+
+        for (let i = 0; i <= cantidad; i++) {
+            const boton = document.createElement("button");
+            boton.type = "button";
+            boton.setAttribute("aria-label", `Ir a la posición ${i + 1}`);
+            boton.addEventListener("click", function () {
+                indice = i;
+                actualizar();
+            });
+            indicadores.appendChild(boton);
+        }
+
+        actualizar();
+    });
+
+    actualizar();
+});
 
