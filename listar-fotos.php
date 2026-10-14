@@ -1,11 +1,13 @@
 <?php
-header('Content-Type: application/json');
+header('Content-Type: application/json; charset=utf-8');
 $dir = __DIR__ . '/fotos';
 $fotos = [];
-foreach (scandir($dir) as $f) {
-  if (preg_match('/\.(jpe?g|png|webp|gif|avif)$/i', $f)) {
-    $fotos[] = 'fotos/' . rawurlencode($f);
+if (is_dir($dir)) {
+  foreach (scandir($dir) as $f) {
+    if (preg_match('/\.(jpe?g|png|webp|gif|avif)$/i', $f)) {
+      $fotos[] = 'fotos/' . rawurlencode($f);
+    }
   }
 }
-natsort($fotos);
+natcasesort($fotos);
 echo json_encode(array_values($fotos));
