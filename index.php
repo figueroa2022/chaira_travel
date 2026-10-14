@@ -178,67 +178,72 @@
         </div>
     </section>
 
-  
+ <!-- Sección Galeria -->
 <section id="galeria" class="testimonials">
     <div class="container">
-
         <h2 class="section-title">Galería de Fotos</h2>
 
-        <div class="galeria-grid">
-            <?php
-            $carpeta = __DIR__ . '/fotos/';
-            $urlCarpeta = 'fotos/';
+        <div class="carousel-container">
 
-            $extensiones = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+            <button class="carousel-btn carousel-btn-prev"
+                    id="fotoPrev" aria-label="Foto anterior">
+                &#10094;
+            </button>
 
-            $archivos = [];
+            <div class="galeria-ventana">
+                <div class="galeria-track" id="galeriaTrack">
 
-            foreach ($extensiones as $extension) {
-                $encontrados = glob(
-                    $carpeta . '*.' . $extension,
-                    GLOB_NOSORT
-                );
+                    <?php
+                    $carpeta = __DIR__ . '/fotos/';
+                    $urlCarpeta = 'fotos/';
+                    $extensiones = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+                    $archivos = [];
 
-                if ($encontrados !== false) {
-                    $archivos = array_merge(
-                        $archivos,
-                        $encontrados
-                    );
-                }
+                    foreach ($extensiones as $extension) {
+                        $encontrados = glob($carpeta . '*.' . $extension);
+                        $mayusculas = glob(
+                            $carpeta . '*.' . strtoupper($extension)
+                        );
 
-                $encontradosMayus = glob(
-                    $carpeta . '*.' . strtoupper($extension),
-                    GLOB_NOSORT
-                );
+                        if ($encontrados !== false) {
+                            $archivos = array_merge($archivos, $encontrados);
+                        }
 
-                if ($encontradosMayus !== false) {
-                    $archivos = array_merge(
-                        $archivos,
-                        $encontradosMayus
-                    );
-                }
-            }
+                        if ($mayusculas !== false) {
+                            $archivos = array_merge($archivos, $mayusculas);
+                        }
+                    }
 
-            sort($archivos, SORT_NATURAL | SORT_FLAG_CASE);
+                    $archivos = array_unique($archivos);
+                    sort($archivos, SORT_NATURAL | SORT_FLAG_CASE);
 
-            foreach ($archivos as $archivo) {
-                $nombre = basename($archivo);
-                $url = $urlCarpeta . rawurlencode($nombre);
-                ?>
+                    foreach ($archivos as $archivo) {
+                        $nombre = basename($archivo);
+                        $url = $urlCarpeta . rawurlencode($nombre);
+                    ?>
 
-                <div class="foto-item">
-                    <img
-                        src="<?= htmlspecialchars($url, ENT_QUOTES, 'UTF-8') ?>"
-                        alt="Fotografía de la galería"
-                        loading="lazy"
-                    >
+                        <div class="galeria-slide">
+                            <img
+                                src="<?= htmlspecialchars(
+                                    $url, ENT_QUOTES, 'UTF-8'
+                                ) ?>"
+                                alt="Fotografía de la galería"
+                                loading="lazy">
+                        </div>
+
+                    <?php } ?>
+
                 </div>
+            </div>
 
-                <?php
-            }
-            ?>
+            <button class="carousel-btn carousel-btn-next"
+                    id="fotoNext" aria-label="Foto siguiente">
+                &#10095;
+            </button>
+
         </div>
 
+        <div class="carousel-indicators" id="fotoIndicadores"></div>
     </div>
 </section>
 
