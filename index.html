@@ -446,7 +446,6 @@
     const w = window.innerWidth;
     return w < 700 ? 1 : w < 1000 ? 2 : 3;
   }
-
 function construir() {
   track.innerHTML = '';
   fotos.forEach((src, i) => {
@@ -456,16 +455,16 @@ function construir() {
     const marco = document.createElement('div');
     marco.className = 'foto-marco';
 
+    const fondo = document.createElement('div');
+    fondo.className = 'fondo';
+    fondo.style.backgroundImage = 'url("' + src + '")';
+
     const img = document.createElement('img');
     img.src = src;
     img.alt = 'Foto ' + (i + 1);
     img.loading = 'lazy';
 
-    const fondo = document.createElement('div');
-fondo.className = 'fondo';
-fondo.style.backgroundImage = 'url("' + src + '")';
-marco.appendChild(fondo);
-      
+    marco.appendChild(fondo);
     marco.appendChild(img);
     item.appendChild(marco);
     track.appendChild(item);
