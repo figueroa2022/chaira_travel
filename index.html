@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chaira Travel - Agencia de Viajes</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=2">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="icon" href="assets/icons/favicon.ico" type="image/x-icon">
@@ -178,6 +178,17 @@
         </div>
     </section>
 
+    <style>
+/* Galería de fotos: estilos propios dentro del HTML para que no dependan del caché de styles.css */
+#galeria .gal-viewport{overflow:hidden;padding:12px 0;width:100%}
+#galeria .gal-track{display:flex;flex-wrap:nowrap;transition:transform .5s ease}
+#galeria .gal-item{flex:0 0 33.3333%;max-width:33.3333%;padding:0 10px;box-sizing:border-box}
+#galeria .gal-marco{position:relative;width:100%;padding-top:100%;border-radius:16px;overflow:hidden;background:#e9e9ef;box-shadow:0 6px 18px rgba(0,0,0,.15);transition:transform .3s ease,box-shadow .3s ease}
+#galeria .gal-item:hover .gal-marco{transform:translateY(-4px);box-shadow:0 10px 24px rgba(0,0,0,.22)}
+#galeria .gal-fondo{position:absolute;top:-20px;left:-20px;right:-20px;bottom:-20px;background-size:cover;background-position:center;filter:blur(18px) brightness(.85)}
+#galeria .gal-marco img.gal-foto{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:contain;display:block;margin:0;max-width:none;border-radius:0}
+#galeria .carousel-btn:disabled{opacity:.35;cursor:default;pointer-events:none}
+</style>
     <!-- Sección Fotos -->
     <section id="galeria" class="testimonials">
   <div class="container">
@@ -478,6 +489,7 @@
     var items = track.children;
     for (var i = 0; i < items.length; i++) {
       items[i].style.flex = '0 0 ' + (100 / perView) + '%';
+      items[i].style.maxWidth = (100 / perView) + '%';
     }
     var max = Math.max(0, fotos.length - perView);
     if (index > max) index = max;
@@ -535,5 +547,4 @@
     
 </body>
 </html>
-
 
