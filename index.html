@@ -258,6 +258,71 @@
         </div>
     </section>
 
+    <!-- Sección Galeria -->
+<section id="galeria" class="testimonials">
+    <div class="container">
+
+        <h2 class="section-title">Galería de Fotos</h2>
+
+        <div class="galeria-grid">
+            <?php
+            $carpeta = __DIR__ . '/fotos/';
+            $urlCarpeta = 'fotos/';
+
+            $extensiones = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+
+            $archivos = [];
+
+            foreach ($extensiones as $extension) {
+                $encontrados = glob(
+                    $carpeta . '*.' . $extension,
+                    GLOB_NOSORT
+                );
+
+                if ($encontrados !== false) {
+                    $archivos = array_merge(
+                        $archivos,
+                        $encontrados
+                    );
+                }
+
+                $encontradosMayus = glob(
+                    $carpeta . '*.' . strtoupper($extension),
+                    GLOB_NOSORT
+                );
+
+                if ($encontradosMayus !== false) {
+                    $archivos = array_merge(
+                        $archivos,
+                        $encontradosMayus
+                    );
+                }
+            }
+
+            sort($archivos, SORT_NATURAL | SORT_FLAG_CASE);
+
+            foreach ($archivos as $archivo) {
+                $nombre = basename($archivo);
+                $url = $urlCarpeta . rawurlencode($nombre);
+                ?>
+
+                <div class="foto-item">
+                    <img
+                        src="<?= htmlspecialchars($url, ENT_QUOTES, 'UTF-8') ?>"
+                        alt="Fotografía de la galería"
+                        loading="lazy"
+                    >
+                </div>
+
+                <?php
+            }
+            ?>
+        </div>
+
+    </div>
+</section>
+
+    
     <!-- Sección Contacto -->
     <section id="contacto" class="contact">
         <div class="container">
