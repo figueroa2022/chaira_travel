@@ -179,7 +179,30 @@
     </section>
 
     <!-- Sección Fotos -->
+<section id="galeria" class="testimonials">
+  <div class="container">
+    <h2 class="section-title">Galería</h2>
+    <div class="carousel-container">
+      <button class="carousel-btn carousel-btn-prev" id="fotosPrev" aria-label="Foto anterior">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M15 18l-6-6 6-6"/>
+        </svg>
+      </button>
 
+      <div class="testimonials-carousel" id="fotosCarousel">
+        <div class="carousel-track" id="fotosTrack"></div>
+      </div>
+
+      <button class="carousel-btn carousel-btn-next" id="fotosNext" aria-label="Foto siguiente">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 18l6-6-6-6"/>
+        </svg>
+      </button>
+
+      <div class="carousel-indicators" id="fotosIndicators"></div>
+    </div>
+  </div>
+</section>
     <!-- Sección Testimonios -->
     <section id="testimonios" class="testimonials">
         <div class="container">
@@ -390,6 +413,111 @@
 
     <script src="script.js"></script>
     <script async src="https://www.tiktok.com/embed.js"></script>
+    <script>
+(function () {
+  const EXT = /\.(jpe?g|png|webp|gif|avif)$/i;
+  const track = document.getElementById('fotosTrack');
+  const viewport = document.getElementById('fotosCarousel');
+  const prev = document.getElementById('fotosPrev');
+  const next = document.getElementById('fotosNext');
+  const indicators = document.getElementById('fotosIndicators');
+
+  let fotos = [], index = 0, perView = 3;
+
+  // 1) Intenta con el PHP; 2) si no existe, lee el listado de la carpeta
+  async function obtenerFotos() {
+    try {
+      const r = await fetch('listar-fotos.php');
+      if (r.ok) return await r.json();
+    } catch (e) {}
+    try {
+      const r = await fetch('fotos/');
+      const html = await r.text();
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      return [...doc.querySelectorAll('a')]
+        .map(a => decodeURIComponent(a.getAttribute('href')))
+        .filter(h => EXT.test(h))
+        .map(h => 'fotos/' + h.split('/').pop());
+    } catch (e) {}
+    return [];
+  }
+
+  function calcPerView() {
+    const w = window.innerWidth;
+    return w < 700 ? 1 : w < 1000 ? 2 : 3;
+  }
+
+  function construir() {
+    track.innerHTML = '';
+    fotos.forEach((src, i) => {
+      const item = document.createElement('div');
+      item.className = 'testimonial-item';
+      const img = document.createElement('img');
+      img.src = src;
+      img.alt = 'Foto ' + (i + 1);
+      img.loading = 'lazy';
+      item.appendChild(img);
+      track.appendChild(item);
+    });
+    ajustar();
+  }
+
+  function ajustar() {
+    perView = calcPerView();
+    track.querySelectorAll('.testimonial-item').forEach(el => {
+      el.style.flex = '0 0 ' + (100 / perView) + '%';
+    });
+    const max = Math.max(0, fotos.length - perView);
+    index = Math.min(index, max);
+    crearIndicadores(max + 1);
+    mover();
+  }
+
+  function crearIndicadores(total) {
+    indicators.innerHTML = '';
+    for (let i = 0; i < total; i++) {
+      const dot = document.createElement('button');
+      dot.className = 'carousel-indicator';
+      dot.setAttribute('aria-label', 'Ir a la foto ' + (i + 1));
+      dot.addEventListener('click', () => { index = i; mover(); });
+      indicators.appendChild(dot);
+    }
+  }
+
+  function mover() {
+    track.style.transform = 'translateX(' + (-index * (100 / perView)) + '%)';
+    const max = Math.max(0, fotos.length - perView);
+    prev.disabled = index <= 0;
+    next.disabled = index >= max;
+    [...indicators.children].forEach((d, i) =>
+      d.classList.toggle('active', i === index));
+  }
+
+  prev.addEventListener('click', () => { if (index > 0) { index--; mover(); } });
+  next.addEventListener('click', () => {
+    if (index < fotos.length - perView) { index++; mover(); }
+  });
+
+  // Deslizar con el dedo
+  let startX = 0;
+  viewport.addEventListener('touchstart', e => startX = e.touches[0].clientX, { passive: true });
+  viewport.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - startX;
+    if (Math.abs(dx) > 50) (dx < 0 ? next : prev).click();
+  });
+
+  window.addEventListener('resize', ajustar);
+
+  obtenerFotos().then(lista => {
+    fotos = lista;
+    if (!fotos.length) {
+      track.innerHTML = '<p style="text-align:center;width:100%">No se encontraron fotos.</p>';
+      return;
+    }
+    construir();
+  });
+})();
+</script>
 
 </body>
 </html>
