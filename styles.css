@@ -1140,48 +1140,43 @@ section {
 }
 
 
+.gal-viewport { overflow: hidden; padding: 12px 0; width: 100%; }
+.gal-track { display: flex; transition: transform .5s ease; }
 
-#fotosCarousel { overflow: hidden; padding: 12px 0; }
-#fotosTrack { display: flex; align-items: flex-start; transition: transform .5s ease; }
-
-/* Anula la altura que viene del carrusel de TikTok */
-#fotosTrack .testimonial-item {
-  height: auto !important;
-  min-height: 0 !important;
+.gal-item {
+  flex: 0 0 33.3333%;
   padding: 0 10px;
   box-sizing: border-box;
 }
 
-/* Marco cuadrado */
-#fotosTrack .foto-marco {
+/* Cuadrado (truco del padding, funciona en todos los navegadores) */
+.gal-marco {
   position: relative;
   width: 100%;
-  aspect-ratio: 1 / 1;
+  padding-top: 100%;
   border-radius: 16px;
   overflow: hidden;
-  background: #eee;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, .15);
-  transition: transform .3s ease, box-shadow .3s ease;
-}
-#fotosTrack .foto-marco:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, .22);
+  background: #e9e9ef;
+  box-shadow: 0 6px 18px rgba(0,0,0,.15);
 }
 
-/* Capa 1: la misma foto, difuminada, llena el cuadrado */
-#fotosTrack .foto-fondo {
+/* Fondo difuminado */
+.gal-fondo {
   position: absolute;
-  inset: -20px;
+  top: -20px; left: -20px; right: -20px; bottom: -20px;
   background-size: cover;
   background-position: center;
-  filter: blur(18px) brightness(.8);
+  filter: blur(18px) brightness(.85);
 }
 
-/* Capa 2: la foto completa, centrada, sin recortar */
-#fotosTrack .foto-completa {
+/* Foto completa, sin recortar */
+.gal-marco img.gal-foto {
   position: absolute;
-  inset: 0;
-  background-size: contain;
-  background-position: center;
-  background-repeat: no-repeat;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  margin: 0;
+  max-width: none;
 }
