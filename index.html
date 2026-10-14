@@ -456,16 +456,17 @@ function construir() {
     marco.className = 'foto-marco';
 
     const fondo = document.createElement('div');
-    fondo.className = 'fondo';
+    fondo.className = 'foto-fondo';
     fondo.style.backgroundImage = 'url("' + src + '")';
 
-    const img = document.createElement('img');
-    img.src = src;
-    img.alt = 'Foto ' + (i + 1);
-    img.loading = 'lazy';
+    const foto = document.createElement('div');
+    foto.className = 'foto-completa';
+    foto.style.backgroundImage = 'url("' + src + '")';
+    foto.setAttribute('role', 'img');
+    foto.setAttribute('aria-label', 'Foto ' + (i + 1));
 
     marco.appendChild(fondo);
-    marco.appendChild(img);
+    marco.appendChild(foto);
     item.appendChild(marco);
     track.appendChild(item);
   });
