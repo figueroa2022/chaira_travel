@@ -216,14 +216,10 @@
   </div>
 </section>
     <style>
-/* Testimonios TikTok: se carga cada video solo al hacer clic (evita el bloqueo "overload-protect") */
-#testimonios .video-placeholder{position:relative;border:0;background:linear-gradient(160deg,#54287f,#2a1445);min-height:0;aspect-ratio:9/16;width:100%;overflow:hidden}
-#testimonios .tt-facade{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;color:#fff}
-#testimonios .tt-play{background:rgba(255,255,255,.15);border:2px solid #fff;color:#fff;border-radius:50%;width:110px;height:110px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;font:600 12px/1.2 inherit;transition:transform .2s ease,background .2s ease}
-#testimonios .tt-play:hover{transform:scale(1.08);background:rgba(255,255,255,.28)}
-#testimonios .tt-play svg{width:44px;height:44px}
-#testimonios .tt-link{color:#fff;font-size:.85rem;opacity:.85;text-decoration:underline}
-#testimonios .video-placeholder iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+/* Testimonios en video: se cargan desde la carpeta videos/ (estilos aquí para que no dependan del caché de styles.css) */
+#testimonios .video-placeholder{position:relative;border:0;background:#000;min-height:0;aspect-ratio:9/16;width:100%;overflow:hidden;display:block}
+#testimonios .video-placeholder video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000;display:block}
+#testimonios .carousel-btn:disabled{opacity:.35;cursor:default;pointer-events:none}
 </style>
     <!-- Sección Testimonios -->
     <section id="testimonios" class="testimonials">
@@ -237,55 +233,7 @@
                 </button>
                 <div class="testimonials-carousel" id="testimonialsCarousel">
                     <div class="carousel-track" id="carouselTrack">
-                        <div class="testimonial-item">
-                            <div class="video-placeholder">
-                               
-                                <div class="tt-facade" data-id="7466566682526436613">
-                                    <button type="button" class="tt-play" aria-label="Reproducir video de TikTok">
-                                        <svg width="64" height="64" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                                        <span>Ver testimonio</span>
-                                    </button>
-                                    <a class="tt-link" href="https://www.tiktok.com/@jessicaospina001/video/7466566682526436613" target="_blank" rel="noopener noreferrer">Abrir en TikTok</a>
-                                </div>
-                                                        
-                            </div>
-                        </div>
-                        <div class="testimonial-item">
-                            <div class="video-placeholder">
-                                <div class="tt-facade" data-id="7325182442917203205">
-                                    <button type="button" class="tt-play" aria-label="Reproducir video de TikTok">
-                                        <svg width="64" height="64" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                                        <span>Ver testimonio</span>
-                                    </button>
-                                    <a class="tt-link" href="https://www.tiktok.com/@jessicaospina001/video/7325182442917203205" target="_blank" rel="noopener noreferrer">Abrir en TikTok</a>
-                                </div>
-                        
-                            </div>
-                        </div>
-                        <div class="testimonial-item">
-                            <div class="video-placeholder">
-                                <div class="tt-facade" data-id="7305611527397182725">
-                                    <button type="button" class="tt-play" aria-label="Reproducir video de TikTok">
-                                        <svg width="64" height="64" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                                        <span>Ver testimonio</span>
-                                    </button>
-                                    <a class="tt-link" href="https://www.tiktok.com/@jessicaospina001/video/7305611527397182725" target="_blank" rel="noopener noreferrer">Abrir en TikTok</a>
-                                </div>
-                            </div>
-                        </div>
-                      
-<div class="testimonial-item">
-    <div class="video-placeholder">
-        <div class="tt-facade" data-id="7314749531525025030">
-                                    <button type="button" class="tt-play" aria-label="Reproducir video de TikTok">
-                                        <svg width="64" height="64" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                                        <span>Ver testimonio</span>
-                                    </button>
-                                    <a class="tt-link" href="https://www.tiktok.com/@jessicaospina001/video/7314749531525025030" target="_blank" rel="noopener noreferrer">Abrir en TikTok</a>
-                                </div>
-    </div>
-</div>
-
+                        <!-- Los videos de la carpeta videos/ se agregan dinámicamente aquí -->
                     </div>
                 </div>
                 <button class="carousel-btn carousel-btn-next" id="carouselNext" aria-label="Video siguiente">
@@ -428,7 +376,7 @@
         </div>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="script.js?v=3"></script>
     <script>
 (function () {
   var EXT = /\.(jpe?g|png|webp|gif|avif)$/i;
@@ -550,22 +498,67 @@
 })();
 </script>
     
+
+
 <script>
+/* Testimonios en video: lista la carpeta videos/ (mismo método que la galería de fotos) */
 (function () {
-  document.querySelectorAll('#testimonios .tt-facade').forEach(function (box) {
-    var btn = box.querySelector('.tt-play');
-    btn.addEventListener('click', function () {
-      var f = document.createElement('iframe');
-      f.src = 'https://www.tiktok.com/embed/v2/' + box.getAttribute('data-id');
-      f.allow = 'autoplay; fullscreen; encrypted-media';
-      f.allowFullscreen = true;
-      f.setAttribute('scrolling', 'no');
-      f.title = 'Video de TikTok';
-      box.parentNode.replaceChild(f, box);
+  var EXT = /\.(mp4|webm|mov|m4v|ogv)$/i;
+  var track = document.getElementById('carouselTrack');
+  if (!track) return;
+
+  async function obtenerVideos() {
+    try {
+      var r = await fetch('listar-videos.php', { cache: 'no-store' });
+      if (r.ok) return await r.json();
+    } catch (e) {}
+    try {
+      var r2 = await fetch('videos/');
+      var html = await r2.text();
+      var doc = new DOMParser().parseFromString(html, 'text/html');
+      return Array.from(doc.querySelectorAll('a'))
+        .map(function (a) { return decodeURIComponent(a.getAttribute('href')); })
+        .filter(function (h) { return EXT.test(h); })
+        .map(function (h) { return 'videos/' + encodeURIComponent(h.split('/').pop()); });
+    } catch (e) {}
+    return [];
+  }
+
+  function iniciar() {
+    obtenerVideos().then(function (lista) {
+      if (!lista.length) {
+        track.innerHTML = '<p style="text-align:center;width:100%;padding:2rem">No se encontraron videos.</p>';
+        return;
+      }
+      track.innerHTML = '';
+      lista.forEach(function (src, i) {
+        var item = document.createElement('div');
+        item.className = 'testimonial-item';
+        var caja = document.createElement('div');
+        caja.className = 'video-placeholder';
+        var v = document.createElement('video');
+        v.src = src + '#t=0.1';
+        v.controls = true;
+        v.preload = 'metadata';
+        v.playsInline = true;
+        v.setAttribute('playsinline', '');
+        v.setAttribute('aria-label', 'Testimonio ' + (i + 1));
+        v.addEventListener('play', function () {
+          track.querySelectorAll('video').forEach(function (o) { if (o !== v) o.pause(); });
+        });
+        caja.appendChild(v);
+        item.appendChild(caja);
+        track.appendChild(item);
+      });
+      if (typeof initCarousel === 'function') initCarousel();
     });
-  });
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', iniciar);
+  else iniciar();
 })();
 </script>
+
 </body>
 </html>
 
