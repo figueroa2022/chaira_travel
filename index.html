@@ -649,7 +649,8 @@
 <script>
 (function () {
     // ---------- CONFIGURACIÓN ----------
-    var LISTA_JSON = 'ventana/listar-publicidad.php'; // plan B si el servidor no muestra el listado de la carpeta
+    var CARPETA = 'ventana/';          // carpeta donde pones la publicidad
+    var LISTA_JSON = 'ventana/listar-publicidad.php'; // archivo PHP que devuelve la lista de la carpeta
     var SEGUNDOS_IMAGEN = 5;           // tiempo que se muestra cada imagen
     var MOSTRAR_UNA_VEZ_POR_SESION = false; // true = solo la primera vez que entra en la sesión
     var RETRASO_APERTURA_MS = 800;     // espera antes de mostrar la ventana
@@ -683,7 +684,7 @@
 
     // Plan B: leer ventana/lista.json  (["a.jpg","b.mp4"])
     function listarDesdeJson() {
-        return fetch(LISTA_JSON).then(function (r) {
+        return fetch(LISTA_JSON, { cache: 'no-store' }).then(function (r) {
             if (!r.ok) throw new Error('sin json');
             return r.json();
         }).then(function (nombres) {
@@ -825,8 +826,9 @@
             archivos = lista;
             construir();
             setTimeout(abrir, RETRASO_APERTURA_MS);
-        }).catch(function () {
+        }).catch(function (err) {
             // No hay archivos o no se pudo leer la carpeta: la ventana no se muestra
+            console.error('Ventana de publicidad:', err);
         });
     }
 
