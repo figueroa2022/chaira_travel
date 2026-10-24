@@ -646,6 +646,217 @@
   else iniciar();
 })();
 </script>
+<script>
+(function () {
+    // ---------- CONFIGURACIÓN ----------
+    var CARPETA = 'ventana/';          // carpeta donde pones la publicidad
+    var LISTA_JSON = 'ventana/lista.json'; // plan B si el servidor no muestra el listado de la carpeta
+    var SEGUNDOS_IMAGEN = 5;           // tiempo que se muestra cada imagen
+    var MOSTRAR_UNA_VEZ_POR_SESION = false; // true = solo la primera vez que entra en la sesión
+    var RETRASO_APERTURA_MS = 800;     // espera antes de mostrar la ventana
+
+    var EXT_IMG = /\.(jpe?g|png|webp|gif|avif|svg)$/i;
+    var EXT_VID = /\.(mp4|webm|ogv|mov|m4v)$/i;
+
+    var overlay = document.getElementById('ventanaPublicidad');
+    var modal = overlay.querySelector('.ventana-modal');
+    var pista = document.getElementById('ventanaPista');
+    var puntos = document.getElementById('ventanaPuntos');
+    var btnPrev = document.getElementById('ventanaPrev');
+    var btnNext = document.getElementById('ventanaNext');
+    var btnCerrar = document.getElementById('ventanaCerrar');
+
+    var archivos = [];
+    var actual = 0;
+    var timer = null;
+
+    // ---------- OBTENER ARCHIVOS DE LA CARPETA ----------
+    function esMedia(nombre) {
+        return EXT_IMG.test(nombre) || EXT_VID.test(nombre);
+    }
+
+    function ordenar(lista) {
+        return lista.sort(function (a, b) {
+            return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' });
+        });
+    }
+
+    // Plan A: leer el listado de la carpeta (funciona en Live Server, Apache, XAMPP, etc.)
+    function listarDesdeCarpeta() {
+        return fetch(CARPETA).then(function (r) {
+            if (!r.ok) throw new Error('sin listado');
+            return r.text();
+        }).then(function (html) {
+            var doc = new DOMParser().parseFromString(html, 'text/html');
+            var urls = [];
+            doc.querySelectorAll('a[href]').forEach(function (a) {
+                var href = a.getAttribute('href');
+                var limpio = decodeURIComponent(href.split('?')[0].split('#')[0]);
+                if (esMedia(limpio)) {
+                    urls.push(new URL(href, new URL(CARPETA, location.href)).href);
+                }
+            });
+            if (!urls.length) throw new Error('vacío');
+            return ordenar(urls);
+        });
+    }
+
+    // Plan B: leer ventana/lista.json  (["a.jpg","b.mp4"])
+    function listarDesdeJson() {
+        return fetch(LISTA_JSON).then(function (r) {
+            if (!r.ok) throw new Error('sin json');
+            return r.json();
+        }).then(function (nombres) {
+            var urls = nombres.filter(esMedia).map(function (n) {
+                return new URL(CARPETA + encodeURIComponent(n).replace(/%2F/g, '/'), location.href).href;
+            });
+            if (!urls.length) throw new Error('vacío');
+            return urls;
+        });
+    }
+
+    function obtenerArchivos() {
+        return listarDesdeCarpeta().catch(listarDesdeJson);
+    }
+
+    // ---------- CONSTRUIR EL CARRUSEL ----------
+    function construir() {
+        pista.innerHTML = '';
+        puntos.innerHTML = '';
+
+        archivos.forEach(function (url, i) {
+            var slide = document.createElement('div');
+            slide.className = 'ventana-slide';
+
+            if (EXT_VID.test(url)) {
+                var v = document.createElement('video');
+                v.src = url;
+                v.muted = true;
+                v.playsInline = true;
+                v.controls = true;
+                v.preload = 'metadata';
+                v.setAttribute('playsinline', '');
+                slide.appendChild(v);
+            } else {
+                var img = document.createElement('img');
+                img.src = url;
+                img.alt = 'Publicidad ' + (i + 1);
+                slide.appendChild(img);
+            }
+            pista.appendChild(slide);
+
+            var p = document.createElement('button');
+            p.className = 'ventana-punto';
+            p.setAttribute('aria-label', 'Ir al elemento ' + (i + 1));
+            p.addEventListener('click', function () { ir(i); });
+            puntos.appendChild(p);
+        });
+
+        modal.classList.toggle('sin-carrusel', archivos.length < 2);
+    }
+
+    // ---------- NAVEGACIÓN ----------
+    function ir(indice) {
+        actual = (indice + archivos.length) % archivos.length;
+        pista.style.transform = 'translateX(-' + (actual * 100) + '%)';
+
+        Array.prototype.forEach.call(puntos.children, function (p, i) {
+            p.classList.toggle('activo', i === actual);
+        });
+
+        programarAvance();
+    }
+
+    function programarAvance() {
+        clearTimeout(timer);
+
+        // pausar todos los videos y reproducir solo el actual
+        var slides = pista.children;
+        for (var i = 0; i < slides.length; i++) {
+            var v = slides[i].querySelector('video');
+            if (v) {
+                v.onended = null;
+                if (i !== actual) { v.pause(); v.currentTime = 0; }
+            }
+        }
+
+        var slideActual = slides[actual];
+        var video = slideActual && slideActual.querySelector('video');
+
+        if (video) {
+            video.loop = archivos.length < 2;
+            var p = video.play();
+            if (p && p.catch) p.catch(function () {});
+            if (archivos.length > 1) {
+                video.onended = function () { ir(actual + 1); };
+            }
+        } else if (archivos.length > 1) {
+            timer = setTimeout(function () { ir(actual + 1); }, SEGUNDOS_IMAGEN * 1000);
+        }
+    }
+
+    btnPrev.addEventListener('click', function () { ir(actual - 1); });
+    btnNext.addEventListener('click', function () { ir(actual + 1); });
+
+    // Deslizar con el dedo en celular
+    var inicioX = null;
+    pista.addEventListener('touchstart', function (e) { inicioX = e.touches[0].clientX; }, { passive: true });
+    pista.addEventListener('touchend', function (e) {
+        if (inicioX === null) return;
+        var dx = e.changedTouches[0].clientX - inicioX;
+        if (Math.abs(dx) > 50) ir(actual + (dx < 0 ? 1 : -1));
+        inicioX = null;
+    }, { passive: true });
+
+    // ---------- ABRIR / CERRAR ----------
+    function abrir() {
+        overlay.classList.add('activa');
+        overlay.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+        ir(0);
+    }
+
+    function cerrar() {
+        clearTimeout(timer);
+        overlay.classList.remove('activa');
+        overlay.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+        pista.querySelectorAll('video').forEach(function (v) { v.pause(); });
+        if (MOSTRAR_UNA_VEZ_POR_SESION) {
+            try { sessionStorage.setItem('ventanaPublicidadVista', '1'); } catch (e) {}
+        }
+    }
+
+    btnCerrar.addEventListener('click', cerrar);
+    overlay.addEventListener('click', function (e) { if (e.target === overlay) cerrar(); });
+    document.addEventListener('keydown', function (e) {
+        if (!overlay.classList.contains('activa')) return;
+        if (e.key === 'Escape') cerrar();
+        if (e.key === 'ArrowLeft') ir(actual - 1);
+        if (e.key === 'ArrowRight') ir(actual + 1);
+    });
+
+    // ---------- INICIO ----------
+    function iniciar() {
+        if (MOSTRAR_UNA_VEZ_POR_SESION) {
+            try { if (sessionStorage.getItem('ventanaPublicidadVista')) return; } catch (e) {}
+        }
+        obtenerArchivos().then(function (lista) {
+            archivos = lista;
+            construir();
+            setTimeout(abrir, RETRASO_APERTURA_MS);
+        }).catch(function () {
+            // No hay archivos o no se pudo leer la carpeta: la ventana no se muestra
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', iniciar);
+    } else {
+        iniciar();
+    }
+})();
+</script>
 
 </body>
 </html>
