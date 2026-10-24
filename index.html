@@ -649,7 +649,6 @@
 <script>
 (function () {
     // ---------- CONFIGURACIÓN ----------
-    var CARPETA = 'ventana/';          // carpeta donde pones la publicidad
     var LISTA_JSON = 'ventana/listar-publicidad.php'; // plan B si el servidor no muestra el listado de la carpeta
     var SEGUNDOS_IMAGEN = 5;           // tiempo que se muestra cada imagen
     var MOSTRAR_UNA_VEZ_POR_SESION = false; // true = solo la primera vez que entra en la sesión
@@ -681,25 +680,6 @@
         });
     }
 
-    // Plan A: leer el listado de la carpeta (funciona en Live Server, Apache, XAMPP, etc.)
-    function listarDesdeCarpeta() {
-        return fetch(CARPETA).then(function (r) {
-            if (!r.ok) throw new Error('sin listado');
-            return r.text();
-        }).then(function (html) {
-            var doc = new DOMParser().parseFromString(html, 'text/html');
-            var urls = [];
-            doc.querySelectorAll('a[href]').forEach(function (a) {
-                var href = a.getAttribute('href');
-                var limpio = decodeURIComponent(href.split('?')[0].split('#')[0]);
-                if (esMedia(limpio)) {
-                    urls.push(new URL(href, new URL(CARPETA, location.href)).href);
-                }
-            });
-            if (!urls.length) throw new Error('vacío');
-            return ordenar(urls);
-        });
-    }
 
     // Plan B: leer ventana/lista.json  (["a.jpg","b.mp4"])
     function listarDesdeJson() {
@@ -716,7 +696,7 @@
     }
 
     function obtenerArchivos() {
-        return listarDesdeCarpeta().catch(listarDesdeJson);
+        return listarDesdeJson();
     }
 
     // ---------- CONSTRUIR EL CARRUSEL ----------
