@@ -11,6 +11,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div class="ventana-overlay" id="ventanaPublicidad" aria-hidden="true">
+    <div class="ventana-modal" role="dialog" aria-modal="true" aria-label="Publicidad">
+        <button class="ventana-cerrar" id="ventanaCerrar" aria-label="Cerrar">&times;</button>
+        <div class="ventana-visor">
+            <div class="ventana-pista" id="ventanaPista"></div>
+            <button class="ventana-flecha ventana-prev" id="ventanaPrev" aria-label="Anterior">&#10094;</button>
+            <button class="ventana-flecha ventana-next" id="ventanaNext" aria-label="Siguiente">&#10095;</button>
+            <div class="ventana-puntos" id="ventanaPuntos"></div>
+        </div>
+    </div>
+</div>
+
     <!-- Navegación -->
     <nav class="navbar">
         <div class="container">
@@ -452,201 +464,9 @@
             </div>
         </div>
     </footer>
-<div class="ventana-overlay" id="ventanaPublicidad" aria-hidden="true">
-    <div class="ventana-modal" role="dialog" aria-modal="true" aria-label="Publicidad">
-        <button class="ventana-cerrar" id="ventanaCerrar" aria-label="Cerrar">&times;</button>
-        <div class="ventana-visor">
-            <div class="ventana-pista" id="ventanaPista"></div>
-            <button class="ventana-flecha ventana-prev" id="ventanaPrev" aria-label="Anterior">&#10094;</button>
-            <button class="ventana-flecha ventana-next" id="ventanaNext" aria-label="Siguiente">&#10095;</button>
-            <div class="ventana-puntos" id="ventanaPuntos"></div>
-        </div>
-    </div>
-</div>
 
     <script src="script.js?v=3"></script>
     <script>
-(function () {
-  var EXT = /\.(jpe?g|png|webp|gif|avif)$/i;
-  var track = document.getElementById('galTrack');
-  var prev = document.getElementById('galPrev');
-  var next = document.getElementById('galNext');
-  var dots = document.getElementById('galDots');
-  var viewport = document.getElementById('galViewport');
-
-  var fotos = [], index = 0, perView = 3;
-
-  async function obtenerFotos() {
-    try {
-      var r = await fetch('listar-fotos.php');
-      if (r.ok) return await r.json();
-    } catch (e) {}
-    try {
-      var r2 = await fetch('fotos/');
-      var html = await r2.text();
-      var doc = new DOMParser().parseFromString(html, 'text/html');
-      return Array.from(doc.querySelectorAll('a'))
-        .map(function (a) { return decodeURIComponent(a.getAttribute('href')); })
-        .filter(function (h) { return EXT.test(h); })
-        .map(function (h) { return 'fotos/' + encodeURIComponent(h.split('/').pop()); });
-    } catch (e) {}
-    return [];
-  }
-
-  function calcPerView() {
-    var w = window.innerWidth;
-    return w < 700 ? 1 : w < 1000 ? 2 : 3;
-  }
-
-  function construir() {
-    track.innerHTML = '';
-    fotos.forEach(function (src, i) {
-      var item = document.createElement('div');
-      item.className = 'gal-item';
-
-      var marco = document.createElement('div');
-      marco.className = 'gal-marco';
-
-      var fondo = document.createElement('div');
-      fondo.className = 'gal-fondo';
-      fondo.style.backgroundImage = 'url("' + src + '")';
-
-      var img = document.createElement('img');
-      img.className = 'gal-foto';
-      img.src = src;
-      img.alt = 'Foto ' + (i + 1);
-      img.loading = 'lazy';
-
-      marco.appendChild(fondo);
-      marco.appendChild(img);
-      item.appendChild(marco);
-      track.appendChild(item);
-    });
-    ajustar();
-  }
-
-  function ajustar() {
-    perView = calcPerView();
-    var items = track.children;
-    for (var i = 0; i < items.length; i++) {
-      items[i].style.flex = '0 0 ' + (100 / perView) + '%';
-      items[i].style.maxWidth = (100 / perView) + '%';
-    }
-    var max = Math.max(0, fotos.length - perView);
-    if (index > max) index = max;
-    crearPuntos(max + 1);
-    mover();
-  }
-
-  function crearPuntos(total) {
-    dots.innerHTML = '';
-    for (var i = 0; i < total; i++) {
-      (function (n) {
-        var d = document.createElement('button');
-        d.className = 'carousel-indicator';
-        d.setAttribute('aria-label', 'Ir a la foto ' + (n + 1));
-        d.addEventListener('click', function () { index = n; mover(); });
-        dots.appendChild(d);
-      })(i);
-    }
-  }
-
-  function mover() {
-    track.style.transform = 'translateX(' + (-index * (100 / perView)) + '%)';
-    var max = Math.max(0, fotos.length - perView);
-    prev.disabled = index <= 0;
-    next.disabled = index >= max;
-    Array.from(dots.children).forEach(function (d, i) {
-      d.classList.toggle('active', i === index);
-    });
-  }
-
-  prev.addEventListener('click', function () { if (index > 0) { index--; mover(); } });
-  next.addEventListener('click', function () {
-    if (index < fotos.length - perView) { index++; mover(); }
-  });
-
-  var startX = 0;
-  viewport.addEventListener('touchstart', function (e) { startX = e.touches[0].clientX; }, { passive: true });
-  viewport.addEventListener('touchend', function (e) {
-    var dx = e.changedTouches[0].clientX - startX;
-    if (Math.abs(dx) > 50) (dx < 0 ? next : prev).click();
-  });
-
-  window.addEventListener('resize', ajustar);
-
-  obtenerFotos().then(function (lista) {
-    fotos = lista;
-    if (!fotos.length) {
-      track.innerHTML = '<p style="text-align:center;width:100%">No se encontraron fotos.</p>';
-      return;
-    }
-    construir();
-  });
-})();
-</script>
-    
-
-
-<script>
-/* Testimonios en video: lista la carpeta videos/ (mismo método que la galería de fotos) */
-(function () {
-  var EXT = /\.(mp4|webm|mov|m4v|ogv)$/i;
-  var track = document.getElementById('carouselTrack');
-  if (!track) return;
-
-  async function obtenerVideos() {
-    try {
-      var r = await fetch('listar-videos.php', { cache: 'no-store' });
-      if (r.ok) return await r.json();
-    } catch (e) {}
-    try {
-      var r2 = await fetch('videos/');
-      var html = await r2.text();
-      var doc = new DOMParser().parseFromString(html, 'text/html');
-      return Array.from(doc.querySelectorAll('a'))
-        .map(function (a) { return decodeURIComponent(a.getAttribute('href')); })
-        .filter(function (h) { return EXT.test(h); })
-        .map(function (h) { return 'videos/' + encodeURIComponent(h.split('/').pop()); });
-    } catch (e) {}
-    return [];
-  }
-
-  function iniciar() {
-    obtenerVideos().then(function (lista) {
-      if (!lista.length) {
-        track.innerHTML = '<p style="text-align:center;width:100%;padding:2rem">No se encontraron videos.</p>';
-        return;
-      }
-      track.innerHTML = '';
-      lista.forEach(function (src, i) {
-        var item = document.createElement('div');
-        item.className = 'testimonial-item';
-        var caja = document.createElement('div');
-        caja.className = 'video-placeholder';
-        var v = document.createElement('video');
-        v.src = src + '#t=0.1';
-        v.controls = true;
-        v.preload = 'metadata';
-        v.playsInline = true;
-        v.setAttribute('playsinline', '');
-        v.setAttribute('aria-label', 'Testimonio ' + (i + 1));
-        v.addEventListener('play', function () {
-          track.querySelectorAll('video').forEach(function (o) { if (o !== v) o.pause(); });
-        });
-        caja.appendChild(v);
-        item.appendChild(caja);
-        track.appendChild(item);
-      });
-      if (typeof initCarousel === 'function') initCarousel();
-    });
-  }
-
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', iniciar);
-  else iniciar();
-})();
-</script>
-<script>
 (function () {
     // ---------- CONFIGURACIÓN ----------
     var CARPETA = 'ventana/';          // carpeta donde pones la publicidad
@@ -837,6 +657,188 @@
     } else {
         iniciar();
     }
+})();
+</script>
+
+    <script>
+(function () {
+  var EXT = /\.(jpe?g|png|webp|gif|avif)$/i;
+  var track = document.getElementById('galTrack');
+  var prev = document.getElementById('galPrev');
+  var next = document.getElementById('galNext');
+  var dots = document.getElementById('galDots');
+  var viewport = document.getElementById('galViewport');
+
+  var fotos = [], index = 0, perView = 3;
+
+  async function obtenerFotos() {
+    try {
+      var r = await fetch('listar-fotos.php');
+      if (r.ok) return await r.json();
+    } catch (e) {}
+    try {
+      var r2 = await fetch('fotos/');
+      var html = await r2.text();
+      var doc = new DOMParser().parseFromString(html, 'text/html');
+      return Array.from(doc.querySelectorAll('a'))
+        .map(function (a) { return decodeURIComponent(a.getAttribute('href')); })
+        .filter(function (h) { return EXT.test(h); })
+        .map(function (h) { return 'fotos/' + encodeURIComponent(h.split('/').pop()); });
+    } catch (e) {}
+    return [];
+  }
+
+  function calcPerView() {
+    var w = window.innerWidth;
+    return w < 700 ? 1 : w < 1000 ? 2 : 3;
+  }
+
+  function construir() {
+    track.innerHTML = '';
+    fotos.forEach(function (src, i) {
+      var item = document.createElement('div');
+      item.className = 'gal-item';
+
+      var marco = document.createElement('div');
+      marco.className = 'gal-marco';
+
+      var fondo = document.createElement('div');
+      fondo.className = 'gal-fondo';
+      fondo.style.backgroundImage = 'url("' + src + '")';
+
+      var img = document.createElement('img');
+      img.className = 'gal-foto';
+      img.src = src;
+      img.alt = 'Foto ' + (i + 1);
+      img.loading = 'lazy';
+
+      marco.appendChild(fondo);
+      marco.appendChild(img);
+      item.appendChild(marco);
+      track.appendChild(item);
+    });
+    ajustar();
+  }
+
+  function ajustar() {
+    perView = calcPerView();
+    var items = track.children;
+    for (var i = 0; i < items.length; i++) {
+      items[i].style.flex = '0 0 ' + (100 / perView) + '%';
+      items[i].style.maxWidth = (100 / perView) + '%';
+    }
+    var max = Math.max(0, fotos.length - perView);
+    if (index > max) index = max;
+    crearPuntos(max + 1);
+    mover();
+  }
+
+  function crearPuntos(total) {
+    dots.innerHTML = '';
+    for (var i = 0; i < total; i++) {
+      (function (n) {
+        var d = document.createElement('button');
+        d.className = 'carousel-indicator';
+        d.setAttribute('aria-label', 'Ir a la foto ' + (n + 1));
+        d.addEventListener('click', function () { index = n; mover(); });
+        dots.appendChild(d);
+      })(i);
+    }
+  }
+
+  function mover() {
+    track.style.transform = 'translateX(' + (-index * (100 / perView)) + '%)';
+    var max = Math.max(0, fotos.length - perView);
+    prev.disabled = index <= 0;
+    next.disabled = index >= max;
+    Array.from(dots.children).forEach(function (d, i) {
+      d.classList.toggle('active', i === index);
+    });
+  }
+
+  prev.addEventListener('click', function () { if (index > 0) { index--; mover(); } });
+  next.addEventListener('click', function () {
+    if (index < fotos.length - perView) { index++; mover(); }
+  });
+
+  var startX = 0;
+  viewport.addEventListener('touchstart', function (e) { startX = e.touches[0].clientX; }, { passive: true });
+  viewport.addEventListener('touchend', function (e) {
+    var dx = e.changedTouches[0].clientX - startX;
+    if (Math.abs(dx) > 50) (dx < 0 ? next : prev).click();
+  });
+
+  window.addEventListener('resize', ajustar);
+
+  obtenerFotos().then(function (lista) {
+    fotos = lista;
+    if (!fotos.length) {
+      track.innerHTML = '<p style="text-align:center;width:100%">No se encontraron fotos.</p>';
+      return;
+    }
+    construir();
+  });
+})();
+</script>
+    
+
+
+<script>
+/* Testimonios en video: lista la carpeta videos/ (mismo método que la galería de fotos) */
+(function () {
+  var EXT = /\.(mp4|webm|mov|m4v|ogv)$/i;
+  var track = document.getElementById('carouselTrack');
+  if (!track) return;
+
+  async function obtenerVideos() {
+    try {
+      var r = await fetch('listar-videos.php', { cache: 'no-store' });
+      if (r.ok) return await r.json();
+    } catch (e) {}
+    try {
+      var r2 = await fetch('videos/');
+      var html = await r2.text();
+      var doc = new DOMParser().parseFromString(html, 'text/html');
+      return Array.from(doc.querySelectorAll('a'))
+        .map(function (a) { return decodeURIComponent(a.getAttribute('href')); })
+        .filter(function (h) { return EXT.test(h); })
+        .map(function (h) { return 'videos/' + encodeURIComponent(h.split('/').pop()); });
+    } catch (e) {}
+    return [];
+  }
+
+  function iniciar() {
+    obtenerVideos().then(function (lista) {
+      if (!lista.length) {
+        track.innerHTML = '<p style="text-align:center;width:100%;padding:2rem">No se encontraron videos.</p>';
+        return;
+      }
+      track.innerHTML = '';
+      lista.forEach(function (src, i) {
+        var item = document.createElement('div');
+        item.className = 'testimonial-item';
+        var caja = document.createElement('div');
+        caja.className = 'video-placeholder';
+        var v = document.createElement('video');
+        v.src = src + '#t=0.1';
+        v.controls = true;
+        v.preload = 'metadata';
+        v.playsInline = true;
+        v.setAttribute('playsinline', '');
+        v.setAttribute('aria-label', 'Testimonio ' + (i + 1));
+        v.addEventListener('play', function () {
+          track.querySelectorAll('video').forEach(function (o) { if (o !== v) o.pause(); });
+        });
+        caja.appendChild(v);
+        item.appendChild(caja);
+        track.appendChild(item);
+      });
+      if (typeof initCarousel === 'function') initCarousel();
+    });
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', iniciar);
+  else iniciar();
 })();
 </script>
 
